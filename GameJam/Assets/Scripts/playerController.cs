@@ -5,10 +5,12 @@ public class playerController : MonoBehaviour {
 
 	private bool holding;
 	private Vector3 mousePos;
-	private LayerMask pickups;
 
+	public GameObject pickups;
 	public GameObject grabber;
 	private GameObject pickup;
+	private pickUpBehavior pickUpScript;
+	public float grabDist;
 
 	// Use this for initialization
 	void Start () {
@@ -16,7 +18,8 @@ public class playerController : MonoBehaviour {
 		mousePos = Vector3.zero;
 		Cursor.lockState = CursorLockMode.Confined;
 		Cursor.visible = false;
-		pickups = 1 << LayerMask.NameToLayer ("pickup");
+		pickup = null;
+		pickUpScript = null;
 	}
 	
 	// Update is called once per frame
@@ -32,20 +35,58 @@ public class playerController : MonoBehaviour {
 
 	void checkForGrabbing(){
 		if (Input.GetMouseButtonDown(0) && !holding) {
-			RaycastHit2D hit;
-			if (hit = (Physics2D.Raycast (transform.position, mousePos, Mathf.Infinity, pickups))) {
-				pickup = hit.transform.gameObject;
-				setToMousePos (pickup);
-				holding = true;
-				Debug.Log ("pickup");
+			pickup = findPickUp();
+			if (pickup != null){
+				pickUpScript = pickup.GetComponent<pickUpBehavior> ();
+				if (pickUpScript.houseIsAvailable ()) {
+					Debug.Log ("pickup");
+					Debug.Log ("mousPos: " + mousePos + " " + "hitPos: " + pickup.transform.position);
+					Debug.Log ("distance btwn mouse and pickup: " + Vector2.Distance (mousePos, pickup.transform.position));
+//					Debug.Break ();
+					setToMousePos (pickup);
+					pickUpScript.heldByMouse = true;
+					holding = true;
+				} else {
+					Debug.Log ("cannot pick up, house is not activated yet or you just missed...");
+					if (pickUpScript != null) {
+						Debug.Log ("houseavailable: " + pickUpScript.houseIsAvailable ());
+					} else {
+						Debug.Log ("picupScript is null");
+					}
+					pickup = null;
+					pickUpScript = null;
+					holding = false;
+				}
+			} else {
+				pickup = null;
+				pickUpScript = null;
+				holding = false;
 			}
 		}
 		if (Input.GetMouseButton (0)) {
 			if (holding) {
 				setToMousePos (pickup);
+				pickUpScript.heldByMouse = true;
 			}
 		} else {
 			release ();
+		}
+	}
+
+	GameObject findPickUp(){
+		float mindist = Mathf.Infinity;
+		Transform closestPickUp = null;
+		foreach (Transform pickupT in pickups.transform) {
+			float distance = Vector2.Distance (pickupT.transform.position, mousePos);
+			if (distance <= mindist) {
+				closestPickUp = pickupT;
+				mindist = distance;
+			}
+		}
+		if (mindist <= grabDist && closestPickUp != null) {
+			return closestPickUp.gameObject;
+		} else {
+			return null;
 		}
 	}
 
@@ -54,12 +95,16 @@ public class playerController : MonoBehaviour {
 			//call pickup.release function that checks for any bins nearby and snap to nearest one, otherwise
 			//go back to original position
 			pickUpBehavior pickUpScript = pickup.GetComponent<pickUpBehavior>();
-			pickUpScript.released ();
+			pickUpScript.released (mousePos);
 			holding = false;
+			pickup = null;
+			Debug.Log ("holding == false");
 		}
 	}
 
 	void setToMousePos(GameObject obj){
-		obj.transform.position = new Vector3 (mousePos.x, mousePos.y, obj.transform.position.z);
+		if (obj != null) {
+			obj.transform.position = new Vector3 (mousePos.x, mousePos.y, obj.transform.position.z);
+		}
 	}
 }

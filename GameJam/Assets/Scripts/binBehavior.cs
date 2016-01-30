@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEditor;
 
 public class binBehavior : MonoBehaviour {
 
@@ -8,41 +7,53 @@ public class binBehavior : MonoBehaviour {
 	public string[] attrs;
 	public bool activated { get; set; }
     SpriteRenderer myRend;
+	public float snapDist;
+	public GameObject house;
+	private pickUpBehavior[] pickUpScripts;
 
 	// Use this for initialization
 	void Awake () {
 		activated = false;
         myRend = gameObject.GetComponent<SpriteRenderer>();
+		pickUpScripts = new pickUpBehavior[pickups.transform.childCount];
+		for (int i = 0; i < pickups.transform.childCount; i++){
+			pickUpScripts [i] = pickups.transform.GetChild (i).gameObject.GetComponent<pickUpBehavior> ();
+		}
 	}
 
 	public bool isOccupied(){
 		//loop through all the pickups every frame and check if any of their positions is same as this, and if it is,
 		//occupied true, and if none, then occupied false?
-		foreach (Transform pickup in pickups.transform){
-			if (pickup.position == transform.position) {
+		foreach (pickUpBehavior pickUpScript in pickUpScripts){
+			Transform pickup = pickUpScript.transform;
+			if (Vector2.Distance(pickup.position, transform.position) <= snapDist &&
+				!pickUpScript.heldByMouse) { //this pickup is not being held by mouse
 				Debug.Log ("this bin is occupado");
 				return true;
 			}
 		}
-        if (!transform.gameObject.name.Contains("start"))
+		if (!transform.CompareTag("startbin")) 
             myRend.color = new Color(1.0f, 0.0f, 0.0f);
         return false;
 	}
 
     public void checkActivation(string[] pickupAttrs) {
         //invariant is that occupied == false
+		int matchingAttrsCount = 0;
         foreach (string attr in attrs) {
-            if (ArrayUtility.IndexOf(pickupAttrs, attr) < 0) {
-                myRend.color = new Color(1.0f, 0.0f, 0.0f);
-                activated = false;
-                Debug.Log("this pickup does not turn me on");
-                return;
-            }
+			foreach (string pickUpAttr in pickupAttrs) {
+				if (string.Compare (attr, pickUpAttr) == 0) {
+					matchingAttrsCount++;
+				}
+			}
         }
-        if (attrs.Length > 0) {
-            myRend.color = new Color(0.0f, 1.0f, 0.0f);
-            Debug.Log("this pickup turns me on");
-            activated = true;
-        }
+		if (matchingAttrsCount > 0 && matchingAttrsCount == attrs.Length) {
+			myRend.color = new Color (0.0f, 1.0f, 0.0f);
+			Debug.Log ("this pickup turns me on");
+			activated = true;
+		} else {
+			Debug.Log ("this pickup turns me off");
+			activated = false;
+		}
 	}
 }

@@ -7,18 +7,20 @@ public class pickUpBehavior : MonoBehaviour {
 
 	private Vector3 origPos;
 	public GameObject bins; //empty gameobject containing all the bins
-	private float binDist;
+	public GameObject house; //house item initially belongs to
+	public float binDist;
 	private GameObject currBin;
 	public string[] attrs;
+	public bool heldByMouse { get; set; }
 
 	// Use this for initialization
 	void Start () {
 		origPos = transform.position;
-		binDist = 2.5f;
 		currBin = null;
+		heldByMouse = false;
 	}
 
-	public void released(){
+	public void released(Vector3 mousePos){
 		//loop through all the bins, find the closest bin, if closest <= binDist, 
 		//translate pickup to that binPos and check if bin is correct bin, otherwise translate to origpos
 		Debug.Log("I was released!");
@@ -27,8 +29,8 @@ public class pickUpBehavior : MonoBehaviour {
 		Transform closestBin = transform;
 		foreach (Transform bin in bins.transform) {
 			binBehavior binScript = bin.gameObject.GetComponent<binBehavior> ();
-			if (!binScript.isOccupied()) { 
-				distance = Vector3.Distance (transform.position, bin.position);
+			if (!binScript.isOccupied() && binScript.house.GetComponent<houseBehavior>().available) { 
+				distance = Vector2.Distance (transform.position, bin.position);
 				Debug.Log (distance);
 				if (distance < mindist) {
 					mindist = distance;
@@ -43,10 +45,15 @@ public class pickUpBehavior : MonoBehaviour {
 			closestBin.gameObject.GetComponent<binBehavior> ().checkActivation (attrs);
 			currBin = closestBin.gameObject;
 		} else {
-			Debug.Log ("snapped to origPos, wasnt close enough to a vacant bin!");
-			transform.position = origPos;
-			resetCurrBin ();
+			Debug.Log ("snapped to oldPos, wasnt close enough to a vacant bin!");
+			if (currBin == null) {
+				transform.position = origPos;
+			} else {
+				transform.position = currBin.transform.position;
+				currBin.GetComponent<binBehavior> ().checkActivation (attrs);
+			}
 		}
+		heldByMouse = false;
 	}
 
 	private void resetCurrBin(){
@@ -59,9 +66,7 @@ public class pickUpBehavior : MonoBehaviour {
 		currBin = null;
 	}
 
-	//perhaps used for animations or jiggling or detecting if ghost nearby?
-//	// Update is called once per frame 
-//	void Update () {
-//	
-//	}
+	public bool houseIsAvailable(){
+		return house.GetComponent<houseBehavior> ().available;
+	}
 }

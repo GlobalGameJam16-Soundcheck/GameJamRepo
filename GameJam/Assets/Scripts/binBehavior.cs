@@ -1,17 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEditor;
 
 public class binBehavior : MonoBehaviour {
 
 	public GameObject pickups;
-	public GameObject correctPickUp;
-//	public bool occupied { get; set; }
-	public bool holdingCorrectPickUp { get; set; }
+	public string[] attrs;
+	public bool activated { get; set; }
 
 	// Use this for initialization
 	void Start () {
-//		occupied = false;
-		holdingCorrectPickUp = false;
+		activated = false;
 	}
 
 	public bool isOccupied(){
@@ -26,14 +25,16 @@ public class binBehavior : MonoBehaviour {
 		return false;
 	}
 
-	public void checkCorrectPickUp(GameObject pickup){
+	public void checkActivation(string[] pickupAttrs){
 		//invariant is that occupied == false
-//		occupied = true;
-		if (string.Compare (pickup.name, correctPickUp.name) == 0) {
-			Debug.Log ("this is the correct pick up");
-			holdingCorrectPickUp = true;
-		} else {
-			holdingCorrectPickUp = false;
+		foreach (string attr in attrs) {
+			if (ArrayUtility.IndexOf(pickupAttrs, attr) < 0){
+				activated = false;
+				Debug.Log ("this pickup does not turn me on");
+				return;
+			}
 		}
+		Debug.Log ("this pickup turns me on");
+		activated = true;
 	}
 }

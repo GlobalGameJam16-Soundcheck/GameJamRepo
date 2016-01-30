@@ -9,6 +9,7 @@ public class pickUpBehavior : MonoBehaviour {
 	public GameObject bins; //empty gameobject containing all the bins
 	private float binDist;
 	private GameObject currBin;
+	public string[] attrs;
 
 	// Use this for initialization
 	void Start () {
@@ -39,7 +40,7 @@ public class pickUpBehavior : MonoBehaviour {
 			Debug.Log ("snapped to bin!");
 			transform.position = closestBin.transform.position;
 			resetCurrBin ();
-			closestBin.gameObject.GetComponent<binBehavior> ().checkCorrectPickUp (transform.gameObject);
+			closestBin.gameObject.GetComponent<binBehavior> ().checkActivation (attrs);
 			currBin = closestBin.gameObject;
 		} else {
 			Debug.Log ("snapped to origPos, wasnt close enough to a vacant bin!");
@@ -52,7 +53,7 @@ public class pickUpBehavior : MonoBehaviour {
 		if (currBin != null) {
 			//it was last at this bin, so this bin is now free
 			binBehavior currBinScript = currBin.GetComponent<binBehavior>();
-			currBinScript.holdingCorrectPickUp = false;
+			currBinScript.activated = false;
 			Debug.Log ("this bin is no longer holding anything");
 		}
 		currBin = null;

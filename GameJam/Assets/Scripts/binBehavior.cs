@@ -7,10 +7,12 @@ public class binBehavior : MonoBehaviour {
 	public GameObject pickups;
 	public string[] attrs;
 	public bool activated { get; set; }
+    SpriteRenderer myRend;
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		activated = false;
+        myRend = gameObject.GetComponent<SpriteRenderer>();
 	}
 
 	public bool isOccupied(){
@@ -22,19 +24,25 @@ public class binBehavior : MonoBehaviour {
 				return true;
 			}
 		}
-		return false;
+        if (!transform.gameObject.name.Contains("start"))
+            myRend.color = new Color(1.0f, 0.0f, 0.0f);
+        return false;
 	}
 
-	public void checkActivation(string[] pickupAttrs){
-		//invariant is that occupied == false
-		foreach (string attr in attrs) {
-			if (ArrayUtility.IndexOf(pickupAttrs, attr) < 0){
-				activated = false;
-				Debug.Log ("this pickup does not turn me on");
-				return;
-			}
-		}
-		Debug.Log ("this pickup turns me on");
-		activated = true;
+    public void checkActivation(string[] pickupAttrs) {
+        //invariant is that occupied == false
+        foreach (string attr in attrs) {
+            if (ArrayUtility.IndexOf(pickupAttrs, attr) < 0) {
+                myRend.color = new Color(1.0f, 0.0f, 0.0f);
+                activated = false;
+                Debug.Log("this pickup does not turn me on");
+                return;
+            }
+        }
+        if (attrs.Length > 0) {
+            myRend.color = new Color(0.0f, 1.0f, 0.0f);
+            Debug.Log("this pickup turns me on");
+            activated = true;
+        }
 	}
 }

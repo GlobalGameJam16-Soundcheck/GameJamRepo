@@ -8,11 +8,13 @@ public class pickUpBehavior : MonoBehaviour {
 	private Vector3 origPos;
 	public GameObject bins; //empty gameobject containing all the bins
 	private float binDist;
+	private GameObject currBin;
 
 	// Use this for initialization
 	void Start () {
 		origPos = transform.position;
 		binDist = 2.5f;
+		currBin = null;
 	}
 
 	public void released(){
@@ -23,20 +25,37 @@ public class pickUpBehavior : MonoBehaviour {
 		float distance;
 		Transform closestBin = transform;
 		foreach (Transform bin in bins.transform) {
-			distance = Vector3.Distance (transform.position, bin.position);
-			Debug.Log (distance);
-			if (distance < mindist) {
-				mindist = distance;
-				closestBin = bin;
+			binBehavior binScript = bin.gameObject.GetComponent<binBehavior> ();
+			if (!binScript.isOccupied()) { 
+				distance = Vector3.Distance (transform.position, bin.position);
+				Debug.Log (distance);
+				if (distance < mindist) {
+					mindist = distance;
+					closestBin = bin;
+				}
 			}
 		}
 		if (mindist < binDist) {
 			Debug.Log ("snapped to bin!");
-			transform.position = closestBin.position;
+			transform.position = closestBin.transform.position;
+			resetCurrBin ();
+			closestBin.gameObject.GetComponent<binBehavior> ().checkCorrectPickUp (transform.gameObject);
+			currBin = closestBin.gameObject;
 		} else {
-			Debug.Log ("snapped to origPos!");
+			Debug.Log ("snapped to origPos, wasnt close enough to a vacant bin!");
 			transform.position = origPos;
+			resetCurrBin ();
 		}
+	}
+
+	private void resetCurrBin(){
+		if (currBin != null) {
+			//it was last at this bin, so this bin is now free
+			binBehavior currBinScript = currBin.GetComponent<binBehavior>();
+			currBinScript.holdingCorrectPickUp = false;
+			Debug.Log ("this bin is no longer holding anything");
+		}
+		currBin = null;
 	}
 
 	//perhaps used for animations or jiggling or detecting if ghost nearby?

@@ -33,3 +33,7 @@ InspectorExpandedItems.asset
 
 # Mac Stuff
 .DS_Store
+Library
+Library/*
+Temp
+Build

@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+//comment
+
 public class pickUpBehavior : MonoBehaviour {
 
 	private Vector3 origPos;

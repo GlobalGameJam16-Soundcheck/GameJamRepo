@@ -41,8 +41,14 @@ public class houseBehavior : MonoBehaviour {
 	void makeNextHouseAvailable(){
 		if (nextHouse != null) {
 			nextHouse.GetComponent<houseBehavior> ().available = true;
+			foreach (Transform child in nextHouse.transform) {
+				if (child.name.Contains ("wall")) {
+					child.gameObject.SetActive (false);
+					break;
+				}
+			}
 		} else {
-			Debug.Log ("this is the last house!");
+			Debug.Log ("this is the last house! you win!");
 		}
 	}
 				

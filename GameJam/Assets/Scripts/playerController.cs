@@ -13,6 +13,8 @@ public class playerController : MonoBehaviour {
 	public float grabDist = 0.35f;
 	private float sW;
 	private float sH;
+    private AudioSource p1;
+    private AudioSource p2;
 
 	// Use this for initialization
 	void Start () {
@@ -22,6 +24,9 @@ public class playerController : MonoBehaviour {
 		Cursor.visible = false;
 		pickup = null;
 		pickUpScript = null;
+        AudioSource[] A = grabber.GetComponents<AudioSource>();
+        p1 = A[0];
+        p2 = A[1];
 	}
 	
 	// Update is called once per frame
@@ -44,7 +49,8 @@ public class playerController : MonoBehaviour {
 					Debug.Log ("pickup");
 					Debug.Log ("mousPos: " + mousePos + " " + "hitPos: " + pickup.transform.position);
 					Debug.Log ("distance btwn mouse and pickup: " + Vector2.Distance (mousePos, pickup.transform.position));
-//					Debug.Break ();
+                    //					Debug.Break ();
+                    p1.Play();
 					setToMousePos (pickup);
 					pickUpScript.heldByMouse = true;
 					holding = true;
@@ -94,8 +100,9 @@ public class playerController : MonoBehaviour {
 
 	void release(){
 		if (holding) {
-			//call pickup.release function that checks for any bins nearby and snap to nearest one, otherwise
-			//go back to original position
+            //call pickup.release function that checks for any bins nearby and snap to nearest one, otherwise
+            //go back to original position
+            p2.Play();
 			pickUpBehavior pickUpScript = pickup.GetComponent<pickUpBehavior>();
 			pickUpScript.released (mousePos);
 			holding = false;

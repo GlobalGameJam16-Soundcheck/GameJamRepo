@@ -10,7 +10,7 @@ public class playerController : MonoBehaviour {
 	public GameObject grabber;
 	private GameObject pickup;
 	private pickUpBehavior pickUpScript;
-	public float grabDist;
+	public float grabDist = 0.35f;
 	private float sW;
 	private float sH;
 

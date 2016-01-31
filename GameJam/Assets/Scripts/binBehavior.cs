@@ -7,7 +7,7 @@ public class binBehavior : MonoBehaviour {
 	public string[] attrs;
 	public bool activated { get; set; }
     SpriteRenderer myRend;
-	public float snapDist;
+	public float snapDist = 0.1f;
 	public GameObject house;
 	private pickUpBehavior[] pickUpScripts;
 

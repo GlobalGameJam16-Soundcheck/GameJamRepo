@@ -8,7 +8,7 @@ public class pickUpBehavior : MonoBehaviour {
 	private Vector3 origPos;
 	public GameObject bins; //empty gameobject containing all the bins
 	public GameObject house; //house item initially belongs to
-	public float binDist;
+	public float binDist = 1f;
 	private GameObject currBin;
 	public string[] attrs;
 	public bool heldByMouse { get; set; }

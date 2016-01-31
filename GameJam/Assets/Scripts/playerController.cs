@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class playerController : MonoBehaviour {
 
@@ -15,6 +16,7 @@ public class playerController : MonoBehaviour {
 	private float sH;
     private AudioSource p1;
     private AudioSource p2;
+	public GameObject textField;
 
 	// Use this for initialization
 	void Start () {
@@ -122,10 +124,11 @@ public class playerController : MonoBehaviour {
 		if (holding) {
 			txt = pickUpScript.text;
 		}
-		sW = Screen.width;
-		sH = Screen.height;
-		Debug.Log ("display item text: " + txt);
-		Debug.Log ("ScreenHeight: " + sH + " " + "ScreenWidth: " + sW);
-		GUI.Box (new Rect (3 * sW / 10, sH / 12, 2 * sW / 5, sH / 10), txt);
+//		sW = Screen.width;
+//		sH = Screen.height;
+//		Debug.Log ("display item text: " + txt);
+//		Debug.Log ("ScreenHeight: " + sH + " " + "ScreenWidth: " + sW);
+//		GUI.Box (new Rect (3 * sW / 10, sH / 12, 2 * sW / 5, sH / 10), txt);
+		textField.GetComponent<Text>().text = txt;
 	}
 }

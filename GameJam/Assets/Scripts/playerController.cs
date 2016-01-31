@@ -11,6 +11,8 @@ public class playerController : MonoBehaviour {
 	private GameObject pickup;
 	private pickUpBehavior pickUpScript;
 	public float grabDist;
+	private float sW;
+	private float sH;
 
 	// Use this for initialization
 	void Start () {
@@ -106,5 +108,17 @@ public class playerController : MonoBehaviour {
 		if (obj != null) {
 			obj.transform.position = new Vector3 (mousePos.x, mousePos.y, obj.transform.position.z);
 		}
+	}
+
+	void OnGUI(){
+		string txt = "";
+		if (holding) {
+			txt = pickUpScript.text;
+		}
+		sW = Screen.width;
+		sH = Screen.height;
+		Debug.Log ("display item text: " + txt);
+		Debug.Log ("ScreenHeight: " + sH + " " + "ScreenWidth: " + sW);
+		GUI.Box (new Rect (3 * sW / 10, sH / 12, 2 * sW / 5, sH / 10), txt);
 	}
 }

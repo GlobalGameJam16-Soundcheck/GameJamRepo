@@ -12,6 +12,7 @@ public class pickUpBehavior : MonoBehaviour {
 	private GameObject currBin;
 	public string[] attrs;
 	public bool heldByMouse { get; set; }
+	public string text;
 
 	// Use this for initialization
 	void Start () {

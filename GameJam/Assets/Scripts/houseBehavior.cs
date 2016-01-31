@@ -43,7 +43,7 @@ public class houseBehavior : MonoBehaviour {
 			nextHouse.GetComponent<houseBehavior> ().available = true;
 			foreach (Transform child in nextHouse.transform) {
 				if (child.name.Contains ("wall")) {
-					child.gameObject.SetActive (false);
+					child.GetComponent<fadeBehavior> ().startFading = true;
 					break;
 				}
 			}

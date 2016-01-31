@@ -44,7 +44,6 @@ public class houseBehavior : MonoBehaviour {
 			foreach (Transform child in nextHouse.transform) {
 				if (child.name.Contains ("wall")) {
 					child.GetComponent<fadeBehavior> ().startFading = true;
-					break;
 				}
 			}
 		} else {

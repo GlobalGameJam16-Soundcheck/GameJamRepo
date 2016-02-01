@@ -21,14 +21,18 @@ public class ghostBehavior : MonoBehaviour {
 			Debug.Log ("ghost should move up now");
 //			controller.
 			activated = true;
-			int val = controller.GetInteger ("value") + 1;
-			controller.SetInteger ("value", val);
+//			int val = controller.GetInteger ("value") + 1;
+			controller.SetInteger ("value", 1);
 		}
 	}
 
 	//when all 5 ghosts are done
 	public void doFinalAnimation(){
-		int val = controller.GetInteger ("value") + 1;
-		controller.SetInteger("value", val);
+//		int val = controller.GetInteger ("value") + 1;
+		controller.SetInteger("value", 2);
+	}
+
+	public void origAnim(){
+		controller.SetInteger("value", 0);
 	}
 }

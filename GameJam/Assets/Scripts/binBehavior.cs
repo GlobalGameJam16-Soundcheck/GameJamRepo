@@ -10,6 +10,7 @@ public class binBehavior : MonoBehaviour {
 	public float snapDist = 0.1f;
 	public GameObject house;
 	private pickUpBehavior[] pickUpScripts;
+	private Light plight;
 
 	// Use this for initialization
 	void Awake () {
@@ -18,6 +19,13 @@ public class binBehavior : MonoBehaviour {
 		pickUpScripts = new pickUpBehavior[pickups.transform.childCount];
 		for (int i = 0; i < pickups.transform.childCount; i++){
 			pickUpScripts [i] = pickups.transform.GetChild (i).gameObject.GetComponent<pickUpBehavior> ();
+		}
+		plight = null;
+		foreach (Transform child in transform) {
+			if (child.CompareTag ("light")) {
+				plight = child.GetComponent<Light>();
+				Debug.Log ("this is a light");
+			}
 		}
 	}
 
@@ -32,8 +40,12 @@ public class binBehavior : MonoBehaviour {
 				return true;
 			}
 		}
-		if (!transform.CompareTag("startbin")) 
-            myRend.color = new Color(1.0f, 0.0f, 0.0f);
+		if (!transform.CompareTag ("startbin")) {
+			myRend.color = new Color (1.0f, 0.0f, 0.0f);
+			if (plight != null) {
+				plight.color = new Color (1.0f, 0.0f, 0.0f);
+			}
+		}
         return false;
 	}
 
@@ -49,6 +61,9 @@ public class binBehavior : MonoBehaviour {
         }
 		if (matchingAttrsCount > 0 && matchingAttrsCount == attrs.Length) {
 			myRend.color = new Color (0.0f, 1.0f, 0.0f);
+			if (plight != null) {
+				plight.color = new Color (0.0f, 1.0f, 0.0f);
+			}
 			Debug.Log ("this pickup turns me on");
 			activated = true;
 		} else {
